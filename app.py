@@ -51,7 +51,7 @@ st.markdown("### Mohamed Falilou Fall")
 # =========================================================
 
 
-st.sidebar.header("Configuration IFC")
+st.sidebar.header("Configuration International Finance Corporation")
 
 importance_regions = {
 
@@ -159,7 +159,7 @@ countries_df = pd.DataFrame(countries,columns=["Pays","Zone"])
 # =========================================================
 
 
-st.sidebar.subheader("Importance Régionale IFC")
+st.sidebar.subheader("Importance Régionale International Finance Corporation")
 
 region_table = pd.DataFrame({
 
