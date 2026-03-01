@@ -47,8 +47,63 @@ st.title("Plateforme de Scoring Financement Pays")
 st.subheader("Base World Development Indicators de la Banque Mondiale")
 st.markdown("### Mohamed Falilou Fall")
 
+# =========================================================
+
+
+st.markdown("## Présentation de la Plateforme")
+
+st.markdown("""
+
+### Objectif
+
+La Plateforme de Scoring Financement Pays est un outil d’aide à la décision permettant d’évaluer l’attractivité des pays pour le financement du développement.
+
+La plateforme repose sur les **World Development Indicators (Banque mondiale)** et combine plusieurs dimensions :
+
+- Croissance économique
+- Stabilité macroéconomique
+- Investissement
+- Dette publique
+- Secteur financier
+- Energie
+- Conditions sociales
+
+### Méthodologie
+
+Chaque indicateur est normalisé sur une échelle de 0 à 100 :
+
+Score indicateur = (Valeur - Minimum) / (Maximum - Minimum)
+
+Le score pays correspond à la moyenne des scores indicateurs.
+
+Un ajustement stratégique est ensuite appliqué selon l’importance régionale IFC.
+
+### Résultats produits
+
+La plateforme fournit :
+
+- Score pays
+- Score ajusté IFC
+- Classement mondial
+- Analyse automatique
+- Top pays investisseurs
+- Profil pays radar
+
+### Utilisation
+
+Cet outil permet :
+
+- La priorisation des pays
+- L’allocation des financements
+- L’analyse comparative
+- L’aide à la décision stratégique
+
+""")
+
 
 # =========================================================
+
+
 
 
 st.sidebar.header("Configuration International Finance Corporation")
