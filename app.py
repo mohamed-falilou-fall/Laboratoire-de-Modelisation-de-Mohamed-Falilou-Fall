@@ -50,7 +50,7 @@ st.markdown("###### Conception et développement par Mohamed Falilou Fall")
 # =========================================================
 
 
-st.markdown("## Présentation de la Plateforme")
+st.markdown("##")
 
 st.markdown("""
 
