@@ -9,8 +9,8 @@ st.set_page_config(
 )
 
 # =========================================================
-# THEME VIOLET MULTI-NUANCES
-# =========================================================
+
+
 
 violet_principal="#5A189A"
 violet_fonce="#3C096C"
@@ -41,8 +41,7 @@ color:{violet_principal};
 
 
 # =========================================================
-# TITRE
-# =========================================================
+
 
 st.title("Plateforme de Scoring Financement Pays")
 st.subheader("Base World Development Indicators de la Banque Mondiale")
@@ -50,8 +49,7 @@ st.markdown("### Mohamed Falilou Fall")
 
 
 # =========================================================
-# CONFIGURATION IFC (NOUVEAU)
-# =========================================================
+
 
 st.sidebar.header("Configuration IFC")
 
@@ -91,8 +89,7 @@ importance_regions = {
 
 
 # =========================================================
-# FICHIER WDI
-# =========================================================
+
 
 file_path = "Filtered_World_Developement_Indicators.xlsx"
 
@@ -100,8 +97,7 @@ df = pd.read_excel(file_path)
 
 
 # =========================================================
-# LISTES DES PAYS (INCHANGE)
-# =========================================================
+
 
 africa = [
 "Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi",
@@ -161,8 +157,7 @@ countries_df = pd.DataFrame(countries,columns=["Pays","Zone"])
 
 
 # =========================================================
-# IMPORTANCE REGIONALE IFC (AFFICHAGE)
-# =========================================================
+
 
 st.sidebar.subheader("Importance Régionale IFC")
 
@@ -195,8 +190,7 @@ st.sidebar.dataframe(region_table)
 
 
 # =========================================================
-# INDICATEURS (INCHANGE)
-# =========================================================
+
 
 indicators = list(set([
 
@@ -271,8 +265,7 @@ indicators = list(set([
 
 
 # =========================================================
-# MENU
-# =========================================================
+
 
 st.sidebar.header("Navigation")
 
@@ -288,8 +281,7 @@ countries_df[countries_df.Zone==selected_zone]["Pays"]
 
 
 # =========================================================
-# FILTRAGE
-# =========================================================
+
 
 country_data = df[df["Country Name"]==selected_country]
 
@@ -299,8 +291,7 @@ country_data["Indicator Name"].isin(indicators)
 
 
 # =========================================================
-# EXTRACTION DERNIERE ANNEE
-# =========================================================
+
 
 years = [c for c in df.columns if str(c).isdigit()]
 latest_year = max(years)
@@ -309,8 +300,7 @@ country_data["Value"] = country_data[latest_year]
 
 
 # =========================================================
-# NORMALISATION SCORE
-# =========================================================
+
 
 country_data["Score"] = (
 country_data["Value"] -
@@ -322,8 +312,7 @@ country_data["Value"].max()
 
 
 # =========================================================
-# SCORE GLOBAL
-# =========================================================
+
 
 score_global = round(country_data["Score"].mean(),2)
 
@@ -338,8 +327,7 @@ col2.metric("Score Ajusté IFC",score_ifc)
 
 
 # =========================================================
-# ANALYSE AUTOMATIQUE
-# =========================================================
+
 
 st.subheader("Analyse Automatique")
 
@@ -360,8 +348,7 @@ else:
 
 
 # =========================================================
-# TABLEAU (INCHANGE)
-# =========================================================
+
 
 st.subheader("Indicateurs")
 
@@ -379,8 +366,7 @@ use_container_width=True
 
 
 # =========================================================
-# CLASSEMENT (INCHANGE)
-# =========================================================
+
 
 st.subheader("Classement Simplifié")
 
@@ -405,8 +391,6 @@ st.dataframe(ranking,use_container_width=True)
 
 
 # =========================================================
-# POSITION DU PAYS
-# =========================================================
 
 rank_position = ranking.reset_index().index[
 ranking["Pays"]==selected_country
@@ -416,8 +400,7 @@ st.metric("Position mondiale",rank_position)
 
 
 # =========================================================
-# TOP 10 INVESTISSEURS
-# =========================================================
+
 
 st.subheader("Top 10 Pays pour Investissement")
 
@@ -435,8 +418,7 @@ st.pyplot(fig)
 
 
 # =========================================================
-# RADAR PAYS
-# =========================================================
+
 
 st.subheader("Profil Pays")
 
@@ -466,8 +448,7 @@ st.pyplot(fig)
 
 
 # =========================================================
-# DISTRIBUTION SCORE (INCHANGE)
-# =========================================================
+
 
 st.subheader("Distribution des Scores")
 
