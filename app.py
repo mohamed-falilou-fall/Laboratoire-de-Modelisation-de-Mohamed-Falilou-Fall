@@ -45,7 +45,7 @@ color:{violet_principal};
 
 st.title("SCORING FINANCEMENT PAYS")
 st.subheader("Plateforme de Scoring des Pays pour le Financement du Développement basée sur 66 indicateurs des World Development Indicators de la Banque mondiale")
-st.markdown("### Mohamed Falilou Fall")
+st.markdown("#### Conception et développement par Mohamed Falilou Fall")
 
 # =========================================================
 
