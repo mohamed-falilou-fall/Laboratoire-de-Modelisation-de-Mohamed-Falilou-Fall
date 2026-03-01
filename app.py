@@ -43,7 +43,7 @@ color:{violet_principal};
 # =========================================================
 
 
-st.title("SCORING FINANCEMENT PAYS")
+st.title("Scoring du financement des pays (Data Engineering & Data Science)")
 st.subheader("Plateforme de Scoring des Pays pour le Financement du Développement basée sur 66 indicateurs des World Development Indicators de la Banque mondiale")
 st.markdown("###### Conception et développement par Mohamed Falilou Fall")
 
