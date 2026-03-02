@@ -519,7 +519,7 @@ page = st.sidebar.radio(
     "Navigation avancée",
     ["Dashboard Principal",
      "Analyse Sectorielle & Régionale",
-     "Consultance International Finance Corporation"]
+     "Consultance stratégique Banque internationale pour la reconstruction et le développement (BIRD)"]
 )
 
 # =========================================================
