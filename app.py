@@ -238,25 +238,84 @@ indicators = list(set([
 ]))
 
 # =========================================================
-# CALCUL SCORE PAYS
+# =========================================================
+# CALCUL SCORE PAYS (NOUVELLE ARCHITECTURE ROBUSTE)
 # =========================================================
 
 years = [c for c in df.columns if str(c).isdigit()]
 latest_year = max(years)
 
-country_data = df[df["Country Name"]==selected_country]
-country_data = country_data[country_data["Indicator Name"].isin(indicators)]
-country_data["Value"] = country_data[latest_year]
+df_latest = df.copy()
+df_latest["Value"] = df_latest[latest_year]
 
-country_data["Score"] = (
-country_data["Value"] - country_data["Value"].min()
-)/(
-country_data["Value"].max()-country_data["Value"].min()+0.0001
-)*100
+# Filtrer uniquement les 66 indicateurs
+df_latest = df_latest[df_latest["Indicator Name"].isin(indicators)]
 
-score_global = round(country_data["Score"].mean(),2)
+# ---------------------------------------------------------
+# 1️⃣ NORMALISATION MONDIALE PAR INDICATEUR
+# ---------------------------------------------------------
+
+indicator_min = df_latest.groupby("Indicator Name")["Value"].min()
+indicator_max = df_latest.groupby("Indicator Name")["Value"].max()
+
+def normalize(row):
+    ind = row["Indicator Name"]
+    min_val = indicator_min[ind]
+    max_val = indicator_max[ind]
+    return (row["Value"] - min_val) / (max_val - min_val + 1e-9)
+
+df_latest["Score_normalized"] = df_latest.apply(normalize, axis=1)
+
+# ---------------------------------------------------------
+# 2️⃣ INVERSION INDICATEURS NEGATIFS
+# ---------------------------------------------------------
+
+negative_keywords = [
+"inflation","debt","mortality","pollution",
+"poverty","Energy imports","PM2.5"
+]
+
+def adjust_direction(row):
+    name = row["Indicator Name"].lower()
+    for k in negative_keywords:
+        if k.lower() in name:
+            return 1 - row["Score_normalized"]
+    return row["Score_normalized"]
+
+df_latest["Score_final"] = df_latest.apply(adjust_direction, axis=1)
+
+# ---------------------------------------------------------
+# 3️⃣ SCORE PAR BLOCS STRATEGIQUES
+# ---------------------------------------------------------
+
+blocks = {
+    "MACROECONOMIE":[i for i in indicators if "GDP" in i or "Inflation" in i or "capital" in i or "savings" in i],
+    "SECTEUR EXTERIEUR":[i for i in indicators if "Exports" in i or "Imports" in i or "Current account" in i],
+    "FINANCES PUBLIQUES":[i for i in indicators if "debt" in i.lower() or "revenue" in i.lower() or "tax" in i.lower() or "government" in i.lower()],
+    "SECTEUR FINANCIER":[i for i in indicators if "interest" in i.lower() or "Broad money" in i or "exchange rate" in i.lower()],
+    "ENVIRONNEMENT":[i for i in indicators if "energy" in i.lower() or "Forest" in i or "pollution" in i or "PM2.5" in i],
+    "SOCIAL":[i for i in indicators if "Population" in i or "poverty" in i.lower() or "Life expectancy" in i or "electricity" in i]
+}
+
+country_data = df_latest[df_latest["Country Name"] == selected_country]
+
+block_scores = {}
+
+for block, inds in blocks.items():
+    block_df = country_data[country_data["Indicator Name"].isin(inds)]
+    if len(block_df) > 0:
+        block_scores[block] = block_df["Score_final"].mean()
+    else:
+        block_scores[block] = 0
+
+score_global = round(np.mean(list(block_scores.values()))*100,2)
+
+# ---------------------------------------------------------
+# 4️⃣ AJUSTEMENT STRATEGIQUE IFC
+# ---------------------------------------------------------
+
 poids_region = importance_regions[selected_zone]["poids"]
-score_ifc = round(score_global*(1+poids_region/100),2)
+score_ifc = round(score_global * (1 + poids_region/100),2)
 
 col1,col2=st.columns(2)
 col1.metric("Score Pays",score_global)
