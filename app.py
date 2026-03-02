@@ -508,3 +508,237 @@ st.pyplot(fig)
 st.subheader("Distribution des Scores")
 
 st.bar_chart(ranking.set_index("Pays"))
+
+
+# =========================================================
+# ================= ANALYSE SECTORIELLE ===================
+# =========================================================
+
+st.sidebar.markdown("##")
+page = st.sidebar.radio(
+    "Navigation avancée",
+    ["Dashboard Principal",
+     "Analyse Sectorielle & Régionale",
+     "Consultance International Finance Corporation"]
+)
+
+# =========================================================
+# ================= CLASSIFICATION SECTORIELLE ============
+# =========================================================
+
+sector_mapping = {
+
+"MACROECONOMIE":[
+"GDP growth (annual %)",
+"GDP per capita (constant 2015 US$)",
+"GDP per capita growth (annual %)",
+"Inflation, consumer prices (annual %)"
+],
+
+"FINANCES PUBLIQUES":[
+"Tax revenue (% of GDP)",
+"Central government debt, total (% of GDP)",
+"Government expenditure per student, primary (% of GDP per capita)"
+],
+
+"SECTEUR FINANCIER":[
+"Broad money (% of GDP)",
+"Lending interest rate (%)",
+"Deposit interest rate (%)"
+],
+
+"SECTEUR EXTERIEUR":[
+"Exports of goods and services (% of GDP)",
+"Current account balance (% of GDP)",
+"External debt stocks (% of GNI)"
+],
+
+"ENVIRONNEMENT":[
+"Forest area (% of land area)",
+"Renewable energy consumption (% of total final energy consumption)",
+"PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)"
+],
+
+"SOCIAL":[
+"Life expectancy at birth, total (years)",
+"Access to electricity (% of population)",
+"Multidimensional poverty headcount ratio (World Bank) (% of population)"
+]
+}
+
+# =========================================================
+# ================== FONCTION SCORE =======================
+# =========================================================
+
+def compute_country_sector_scores(country):
+
+    d = df[df["Country Name"] == country]
+    d = d[d["Indicator Name"].isin(indicators)]
+    d["Value"] = d[latest_year]
+
+    scores = {}
+
+    for sector, ind_list in sector_mapping.items():
+        sub = d[d["Indicator Name"].isin(ind_list)]
+
+        if len(sub) > 0:
+            sub["Score"] = (
+                (sub["Value"] - sub["Value"].min()) /
+                (sub["Value"].max() - sub["Value"].min() + 0.0001)
+            ) * 100
+
+            scores[sector] = sub["Score"].mean()
+        else:
+            scores[sector] = np.nan
+
+    return scores
+
+# =========================================================
+# ================== ANALYSE SECTORIELLE ==================
+# =========================================================
+
+if page == "Analyse Sectorielle & Régionale":
+
+    st.header("Analyse Sectorielle & Régionale")
+
+    all_results = []
+
+    for country, zone in countries:
+        sector_scores = compute_country_sector_scores(country)
+
+        for sector in sector_mapping.keys():
+            all_results.append([
+                country,
+                zone,
+                sector,
+                sector_scores[sector]
+            ])
+
+    results_df = pd.DataFrame(
+        all_results,
+        columns=["Pays", "Région", "Secteur", "Score"]
+    )
+
+    # 1️ - SCORE PAR SECTEUR ET PAR REGION
+    st.subheader("1️ - Score par Secteur et par Région")
+
+    sector_region = (
+        results_df
+        .groupby(["Région", "Secteur"])["Score"]
+        .mean()
+        .reset_index()
+        .sort_values("Score", ascending=False)
+    )
+
+    st.dataframe(sector_region, use_container_width=True)
+
+    # Graphique barres
+    st.subheader("Barres par Secteur pour chaque Région")
+
+    for region in sector_region["Région"].unique():
+        subset = sector_region[sector_region["Région"] == region]
+
+        fig, ax = plt.subplots(figsize=(6,4))
+        ax.bar(subset["Secteur"], subset["Score"], color=violet_moyen)
+        plt.xticks(rotation=45)
+        plt.title(f"Score Sectoriel - {region}")
+        st.pyplot(fig)
+
+    # 2️ - SCORE GLOBAL PAR REGION
+    st.subheader("2️ - Score Global par Région")
+
+    global_region = (
+        results_df
+        .groupby("Région")["Score"]
+        .mean()
+        .reset_index()
+        .sort_values("Score", ascending=False)
+    )
+
+    st.dataframe(global_region, use_container_width=True)
+
+    fig, ax = plt.subplots(figsize=(6,4))
+    ax.bar(global_region["Région"], global_region["Score"], color=violet_principal)
+    plt.xticks(rotation=45)
+    plt.title("Score Global par Région")
+    st.pyplot(fig)
+
+    # 3️ - SCORE GLOBAL PAR SECTEUR
+    st.subheader("3️ - Score Global par Secteur")
+
+    global_sector = (
+        results_df
+        .groupby("Secteur")["Score"]
+        .mean()
+        .reset_index()
+        .sort_values("Score", ascending=False)
+    )
+
+    st.dataframe(global_sector, use_container_width=True)
+
+    fig, ax = plt.subplots(figsize=(6,4))
+    ax.bar(global_sector["Secteur"], global_sector["Score"], color=violet_clair)
+    plt.xticks(rotation=45)
+    plt.title("Score Global par Secteur")
+    st.pyplot(fig)
+
+    # 4️ - SCORE GLOBAL MONDIAL
+    st.subheader("4️ - Score Global Mondial")
+
+    global_world = round(results_df["Score"].mean(),2)
+
+    st.metric("Score Mondial Global", global_world)
+
+    # Heatmap
+    st.subheader("Heatmap Globale Région x Secteur")
+
+    pivot_table = sector_region.pivot(
+        index="Région",
+        columns="Secteur",
+        values="Score"
+    )
+
+    fig, ax = plt.subplots(figsize=(8,6))
+    cax = ax.imshow(pivot_table, cmap="Purples")
+    plt.xticks(range(len(pivot_table.columns)), pivot_table.columns, rotation=45)
+    plt.yticks(range(len(pivot_table.index)), pivot_table.index)
+    fig.colorbar(cax)
+    st.pyplot(fig)
+
+# =========================================================
+# ================= CONSULTANCE IFC =======================
+# =========================================================
+
+if page == "Consultance International Finance Corporation":
+
+    st.header("Consultance International Finance Corporation")
+
+    st.markdown("""
+    Classement stratégique des 20 pays les moins performants
+    pour orientation et assistance prioritaire IFC.
+    """)
+
+    # Score global pays
+    country_scores = []
+
+    for country, zone in countries:
+        sector_scores = compute_country_sector_scores(country)
+        mean_score = np.nanmean(list(sector_scores.values()))
+        country_scores.append([country, zone, mean_score])
+
+    consult_df = pd.DataFrame(
+        country_scores,
+        columns=["Pays", "Région", "Score Global"]
+    )
+
+    consult_df = consult_df.sort_values("Score Global", ascending=True).head(20)
+
+    st.subheader("20 Pays les moins performants")
+
+    st.dataframe(consult_df, use_container_width=True)
+
+    fig, ax = plt.subplots(figsize=(8,6))
+    ax.barh(consult_df["Pays"], consult_df["Score Global"], color=violet_fonce)
+    ax.invert_yaxis()
+    plt.title("Bottom 20 Pays - Priorité Consultance IFC")
+    st.pyplot(fig)
