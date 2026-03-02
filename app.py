@@ -9,8 +9,8 @@ st.set_page_config(
 )
 
 # =========================================================
-
-
+# THEME VIOLET
+# =========================================================
 
 violet_principal="#5A189A"
 violet_fonce="#3C096C"
@@ -20,35 +20,28 @@ violet_moyen="#7B2CBF"
 
 st.markdown(f"""
 <style>
-
 .stSidebar {{
 background-color:{violet_tres_clair};
 }}
-
 .stMetric {{
 background-color:{violet_tres_clair};
 border-radius:10px;
 padding:10px;
 border-left:6px solid {violet_principal};
 }}
-
 h1,h2,h3,h4 {{
 color:{violet_principal};
 }}
-
 </style>
 """,unsafe_allow_html=True)
 
-
 # =========================================================
-
+# TITRE & PRESENTATION
+# =========================================================
 
 st.title("Scoring du financement des pays (Data Engineering & Data Science)")
 st.subheader("Première itération de la Plateforme de Scoring des Pays pour le Financement du Développement basée sur 66 indicateurs des World Development Indicators de la Banque mondiale")
 st.markdown("###### Conception et développement par Mohamed Falilou Fall")
-
-# =========================================================
-
 
 st.markdown("##")
 
@@ -60,13 +53,13 @@ La Plateforme de Scoring Financement Pays est un outil d’aide à la décision 
 
 La plateforme repose sur les **World Development Indicators (Banque mondiale)** et combine plusieurs dimensions :
 
-- Croissance économique
-- Stabilité macroéconomique
-- Investissement
-- Dette publique
-- Secteur financier
-- Energie
-- Conditions sociales
+- Croissance économique  
+- Stabilité macroéconomique  
+- Investissement  
+- Dette publique  
+- Secteur financier  
+- Energie  
+- Conditions sociales  
 
 ### Méthodologie
 
@@ -82,77 +75,48 @@ Un ajustement stratégique est ensuite appliqué selon l’importance régionale
 
 La plateforme fournit :
 
-- Score pays
-- Score ajusté IFC
-- Classement mondial
-- Analyse automatique
-- Top pays investisseurs
-- Profil pays radar
+- Score pays  
+- Score ajusté IFC  
+- Classement mondial  
+- Analyse automatique  
+- Analyse régionale  
+- Consultance stratégique IFC  
 
 ### Utilisation
 
 Cet outil permet :
 
-- La priorisation des pays
-- L’allocation des financements
-- L’analyse comparative
-- L’aide à la décision stratégique
+- La priorisation des pays  
+- L’allocation des financements  
+- L’analyse comparative  
+- L’aide à la décision stratégique  
 
 """)
 
-
 # =========================================================
-
-
-
+# CONFIGURATION IFC
+# =========================================================
 
 st.sidebar.header("Configuration International Finance Corporation")
 
 importance_regions = {
-
-"Africa":{
-"poids":36,
-"importance":"Très élevé",
-"role":"Région prioritaire pour la finance de développement"
-},
-
-"Asia":{
-"poids":24,
-"importance":"Très élevé",
-"role":"Principaux marchés émergents"
-},
-
-"South America":{
-"poids":19,
-"importance":"Élevé",
-"role":"Marchés intermédiaires dynamiques"
-},
-
-"Caribbean":{
-"poids":19,
-"importance":"Élevé",
-"role":"Marchés intermédiaires dynamiques"
-},
-
-"Eastern Europe":{
-"poids":15,
-"importance":"Moyen",
-"role":"Transition économique"
+"Africa":{"poids":36,"importance":"Très élevé","role":"Région prioritaire pour la finance de développement"},
+"Asia":{"poids":24,"importance":"Très élevé","role":"Principaux marchés émergents"},
+"South America":{"poids":19,"importance":"Élevé","role":"Marchés intermédiaires dynamiques"},
+"Caribbean":{"poids":19,"importance":"Élevé","role":"Marchés intermédiaires dynamiques"},
+"Eastern Europe":{"poids":15,"importance":"Moyen","role":"Transition économique"}
 }
-
-}
-
 
 # =========================================================
-
+# DONNEES
+# =========================================================
 
 file_path = "Filtered_World_Developement_Indicators.xlsx"
-
 df = pd.read_excel(file_path)
 
-
 # =========================================================
-
+# PAYS PAR REGION
+# =========================================================
 
 africa = [
 "Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi",
@@ -210,117 +174,9 @@ countries = (
 
 countries_df = pd.DataFrame(countries,columns=["Pays","Zone"])
 
-
 # =========================================================
-
-
-st.sidebar.subheader("Importance Régionale International Finance Corporation")
-
-region_table = pd.DataFrame({
-
-"Région":[
-"Afrique",
-"Asie du Sud et de l’Est",
-"Amérique latine et Caraïbes",
-"Europe émergente"
-],
-
-"Part approximative":[
-"~36 %",
-"~24 %",
-"~13–25 %",
-"~8–22 %"
-],
-
-"Niveau":[
-"Très élevé",
-"Très élevé",
-"Élevé",
-"Moyen"
-]
-
-})
-
-st.sidebar.dataframe(region_table)
-
-
+# NAVIGATION
 # =========================================================
-
-
-indicators = list(set([
-
-"GDP growth (annual %)",
-"GDP per capita (constant 2015 US$)",
-"GDP per capita (constant LCU)",
-"GDP per capita (current LCU)",
-"GDP per capita (current US$)",
-"GDP per capita growth (annual %)",
-"GDP per capita, PPP (constant 2021 international $)",
-"Government expenditure per student, primary (% of GDP per capita)",
-"Government expenditure per student, secondary (% of GDP per capita)",
-"Government expenditure per student, tertiary (% of GDP per capita)",
-"Inflation, GDP deflator (annual %)",
-"Inflation, GDP deflator: linked series (annual %)",
-"Inflation, consumer prices (annual %)",
-"Gross capital formation (% of GDP)",
-"Gross capital formation (annual % growth)",
-"Gross capital formation (constant 2015 US$)",
-"Gross capital formation (constant LCU)",
-"Gross capital formation (current LCU)",
-"Gross capital formation (current US$)",
-"Gross domestic income (constant LCU)",
-"Gross domestic savings (% of GDP)",
-"Gross domestic savings (current LCU)",
-"Gross fixed capital formation (% of GDP)",
-"Current account balance (% of GDP)",
-"Current account balance (BoP, current US$)",
-"Exports as a capacity to import (constant LCU)",
-"Exports of goods and services (% of GDP)",
-"Exports of goods and services (BoP, current US$)",
-"Exports of goods and services (annual % growth)",
-"Exports of goods and services (constant 2015 US$)",
-"Exports of goods and services (constant LCU)",
-"Exports of goods and services (current LCU)",
-"Exports of goods and services (current US$)",
-"Food imports (% of merchandise imports)",
-"Goods imports (BoP, current US$)",
-"Imports of goods and services (% of GDP)",
-"Imports of goods and services (annual % growth)",
-"Forest area (% of land area)",
-"Forest area (sq. km)",
-"Central government debt, total (% of GDP)",
-"Central government debt, total (current LCU)",
-"Debt service on external debt, total (TDS, current US$)",
-"External debt stocks (% of GNI)",
-"External debt stocks, total (DOD, current US$)",
-"Deposit interest rate (%)",
-"Lending interest rate (%)",
-"Real interest rate (%)",
-"Renewable energy consumption (% of total final energy consumption)",
-"Energy imports, net (% of energy use)",
-"Energy use (kg of oil equivalent per capita)",
-"Mortality rate attributed to household and ambient air pollution",
-"PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
-"Population ages 0-14 (% of total population)",
-"Population ages 15-64 (% of total population)",
-"Life expectancy at birth, female (years)",
-"Life expectancy at birth, male (years)",
-"Life expectancy at birth, total (years)",
-"Multidimensional poverty headcount ratio (World Bank) (% of population)",
-"Access to electricity (% of population)",
-"Official exchange rate (LCU per US$, period average)",
-"Broad money (% of GDP)",
-"Broad money growth (annual %)",
-"Tax revenue (% of GDP)",
-"Taxes on income, profits and capital gains (% of revenue)",
-"Taxes on goods and services (% of revenue)",
-"Other taxes (% of revenue)"
-
-]))
-
-
-# =========================================================
-
 
 st.sidebar.header("Navigation")
 
@@ -334,411 +190,129 @@ selected_country = st.sidebar.selectbox(
 countries_df[countries_df.Zone==selected_zone]["Pays"]
 )
 
-
+# =========================================================
+# INDICATEURS (66)
 # =========================================================
 
-
-country_data = df[df["Country Name"]==selected_country]
-
-country_data = country_data[
-country_data["Indicator Name"].isin(indicators)
-]
-
+indicators = list(set([
+"GDP growth (annual %)","GDP per capita (constant 2015 US$)",
+"GDP per capita (constant LCU)","GDP per capita (current LCU)",
+"GDP per capita (current US$)","GDP per capita growth (annual %)",
+"GDP per capita, PPP (constant 2021 international $)",
+"Government expenditure per student, primary (% of GDP per capita)",
+"Government expenditure per student, secondary (% of GDP per capita)",
+"Government expenditure per student, tertiary (% of GDP per capita)",
+"Inflation, GDP deflator (annual %)","Inflation, GDP deflator: linked series (annual %)",
+"Inflation, consumer prices (annual %)","Gross capital formation (% of GDP)",
+"Gross capital formation (annual % growth)","Gross capital formation (constant 2015 US$)",
+"Gross capital formation (constant LCU)","Gross capital formation (current LCU)",
+"Gross capital formation (current US$)","Gross domestic income (constant LCU)",
+"Gross domestic savings (% of GDP)","Gross domestic savings (current LCU)",
+"Gross fixed capital formation (% of GDP)","Current account balance (% of GDP)",
+"Current account balance (BoP, current US$)","Exports as a capacity to import (constant LCU)",
+"Exports of goods and services (% of GDP)","Exports of goods and services (BoP, current US$)",
+"Exports of goods and services (annual % growth)","Exports of goods and services (constant 2015 US$)",
+"Exports of goods and services (constant LCU)","Exports of goods and services (current LCU)",
+"Exports of goods and services (current US$)","Food imports (% of merchandise imports)",
+"Goods imports (BoP, current US$)","Imports of goods and services (% of GDP)",
+"Imports of goods and services (annual % growth)","Forest area (% of land area)",
+"Forest area (sq. km)","Central government debt, total (% of GDP)",
+"Central government debt, total (current LCU)","Debt service on external debt, total (TDS, current US$)",
+"External debt stocks (% of GNI)","External debt stocks, total (DOD, current US$)",
+"Deposit interest rate (%)","Lending interest rate (%)","Real interest rate (%)",
+"Renewable energy consumption (% of total final energy consumption)",
+"Energy imports, net (% of energy use)","Energy use (kg of oil equivalent per capita)",
+"Mortality rate attributed to household and ambient air pollution",
+"PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
+"Population ages 0-14 (% of total population)","Population ages 15-64 (% of total population)",
+"Life expectancy at birth, female (years)","Life expectancy at birth, male (years)",
+"Life expectancy at birth, total (years)",
+"Multidimensional poverty headcount ratio (World Bank) (% of population)",
+"Access to electricity (% of population)",
+"Official exchange rate (LCU per US$, period average)",
+"Broad money (% of GDP)","Broad money growth (annual %)",
+"Tax revenue (% of GDP)",
+"Taxes on income, profits and capital gains (% of revenue)",
+"Taxes on goods and services (% of revenue)",
+"Other taxes (% of revenue)"
+]))
 
 # =========================================================
-
+# CALCUL SCORE PAYS
+# =========================================================
 
 years = [c for c in df.columns if str(c).isdigit()]
 latest_year = max(years)
 
+country_data = df[df["Country Name"]==selected_country]
+country_data = country_data[country_data["Indicator Name"].isin(indicators)]
 country_data["Value"] = country_data[latest_year]
 
-
-# =========================================================
-
-
 country_data["Score"] = (
-country_data["Value"] -
-country_data["Value"].min()
+country_data["Value"] - country_data["Value"].min()
 )/(
-country_data["Value"].max()
--country_data["Value"].min()+0.0001
+country_data["Value"].max()-country_data["Value"].min()+0.0001
 )*100
 
-
-# =========================================================
-
-
 score_global = round(country_data["Score"].mean(),2)
-
 poids_region = importance_regions[selected_zone]["poids"]
-
 score_ifc = round(score_global*(1+poids_region/100),2)
 
 col1,col2=st.columns(2)
-
 col1.metric("Score Pays",score_global)
 col2.metric("Score Ajusté IFC",score_ifc)
 
-
+# =========================================================
+# ANALYSE AVANCEE PAR ZONE
 # =========================================================
 
+st.markdown("---")
+st.header(f"Analyse Avancée - {selected_zone}")
 
-st.subheader("Analyse Automatique")
+zone_countries = countries_df[countries_df["Zone"]==selected_zone]["Pays"]
 
-st.write("Importance IFC :",importance_regions[selected_zone]["importance"])
-st.write("Rôle stratégique :",importance_regions[selected_zone]["role"])
+zone_results = []
 
-if score_ifc>90:
-    st.success("Pays hautement prioritaire pour financement IFC")
-
-elif score_ifc>70:
-    st.success("Pays très attractif pour financement IFC")
-
-elif score_ifc>50:
-    st.warning("Pays modérément attractif")
-
-else:
-    st.error("Pays à risque élevé")
-
-
-# =========================================================
-
-
-st.subheader("Indicateurs")
-
-st.dataframe(
-
-country_data[[
-"Indicator Name",
-"Value",
-"Score"
-]].sort_values("Score",ascending=False),
-
-use_container_width=True
-
-)
-
-
-# =========================================================
-
-
-st.subheader("Classement Simplifié")
-
-scores=[]
-
-for c in countries_df["Pays"]:
-
-    d=df[df["Country Name"]==c]
-
+for country in zone_countries:
+    d=df[df["Country Name"]==country]
     d=d[d["Indicator Name"].isin(indicators)]
-
     d["Value"]=d[latest_year]
-
     d["Score"]=(d["Value"]-d["Value"].min())/(d["Value"].max()-d["Value"].min()+0.0001)*100
+    zone_results.append([country,d["Score"].mean()])
 
-    scores.append([c,d["Score"].mean()])
+zone_df = pd.DataFrame(zone_results,columns=["Pays","Score"]).sort_values("Score",ascending=False)
 
-ranking=pd.DataFrame(scores,columns=["Pays","Score"])
-ranking=ranking.sort_values("Score",ascending=False)
-
-st.dataframe(ranking,use_container_width=True)
-
-
-# =========================================================
-
-rank_position = ranking.reset_index().index[
-ranking["Pays"]==selected_country
-][0]+1
-
-st.metric("Position mondiale",rank_position)
-
-
-# =========================================================
-
-
-st.subheader("Top 10 Pays pour Investissement")
-
-top10=ranking.head(10)
+st.subheader("Classement des pays de la zone")
+st.dataframe(zone_df,use_container_width=True)
 
 fig,ax=plt.subplots(figsize=(8,5))
-
-ax.barh(top10["Pays"],top10["Score"],color=violet_moyen)
-
+ax.barh(zone_df["Pays"],zone_df["Score"],color=violet_moyen)
 ax.invert_yaxis()
-
-plt.title("Top 10 Pays Scoring Investissement")
-
 st.pyplot(fig)
 
+score_zone = round(zone_df["Score"].mean(),2)
+st.metric("Score moyen régional",score_zone)
 
-# =========================================================
+st.subheader("Comparaison Pays vs Moyenne Zone")
 
-
-st.subheader("Profil Pays")
-
-radar_data=country_data.head(6)
-
-labels=radar_data["Indicator Name"]
-values=radar_data["Score"]
-
-angles=np.linspace(0,2*np.pi,len(labels),endpoint=False)
-
-values=np.concatenate((values,[values.iloc[0]]))
-angles=np.concatenate((angles,[angles[0]]))
-
-fig=plt.figure(figsize=(6,6))
-
-ax=plt.subplot(111,polar=True)
-
-ax.plot(angles,values,color=violet_principal)
-
-ax.fill(angles,values,color=violet_clair,alpha=0.3)
-
-ax.set_xticks(angles[:-1])
-
-ax.set_xticklabels(labels,fontsize=7)
-
+fig,ax=plt.subplots(figsize=(6,4))
+ax.bar(["Pays sélectionné","Moyenne Zone"],
+       [score_global,score_zone],
+       color=[violet_principal,violet_clair])
 st.pyplot(fig)
 
-
+# =========================================================
+# CONSULTANCE IFC
 # =========================================================
 
+st.markdown("---")
+st.header("Consultance IFC - Zone sélectionnée")
 
-st.subheader("Distribution des Scores")
+consult_df = zone_df.sort_values("Score").head(5)
 
-st.bar_chart(ranking.set_index("Pays"))
+st.dataframe(consult_df,use_container_width=True)
 
-
-# =========================================================
-# ================= ANALYSE SECTORIELLE ===================
-# =========================================================
-
-st.sidebar.markdown("##")
-page = st.sidebar.radio(
-    "Navigation avancée",
-    ["Dashboard Principal",
-     "Analyse Sectorielle & Régionale",
-     "Consultance stratégique Banque internationale pour la reconstruction et le développement (BIRD)"]
-)
-
-# =========================================================
-# ================= CLASSIFICATION SECTORIELLE ============
-# =========================================================
-
-sector_mapping = {
-
-"MACROECONOMIE":[
-"GDP growth (annual %)",
-"GDP per capita (constant 2015 US$)",
-"GDP per capita growth (annual %)",
-"Inflation, consumer prices (annual %)"
-],
-
-"FINANCES PUBLIQUES":[
-"Tax revenue (% of GDP)",
-"Central government debt, total (% of GDP)",
-"Government expenditure per student, primary (% of GDP per capita)"
-],
-
-"SECTEUR FINANCIER":[
-"Broad money (% of GDP)",
-"Lending interest rate (%)",
-"Deposit interest rate (%)"
-],
-
-"SECTEUR EXTERIEUR":[
-"Exports of goods and services (% of GDP)",
-"Current account balance (% of GDP)",
-"External debt stocks (% of GNI)"
-],
-
-"ENVIRONNEMENT":[
-"Forest area (% of land area)",
-"Renewable energy consumption (% of total final energy consumption)",
-"PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)"
-],
-
-"SOCIAL":[
-"Life expectancy at birth, total (years)",
-"Access to electricity (% of population)",
-"Multidimensional poverty headcount ratio (World Bank) (% of population)"
-]
-}
-
-# =========================================================
-# ================== FONCTION SCORE =======================
-# =========================================================
-
-def compute_country_sector_scores(country):
-
-    d = df[df["Country Name"] == country]
-    d = d[d["Indicator Name"].isin(indicators)]
-    d["Value"] = d[latest_year]
-
-    scores = {}
-
-    for sector, ind_list in sector_mapping.items():
-        sub = d[d["Indicator Name"].isin(ind_list)]
-
-        if len(sub) > 0:
-            sub["Score"] = (
-                (sub["Value"] - sub["Value"].min()) /
-                (sub["Value"].max() - sub["Value"].min() + 0.0001)
-            ) * 100
-
-            scores[sector] = sub["Score"].mean()
-        else:
-            scores[sector] = np.nan
-
-    return scores
-
-# =========================================================
-# ================== ANALYSE SECTORIELLE ==================
-# =========================================================
-
-if page == "Analyse Sectorielle & Régionale":
-
-    st.header("Analyse Sectorielle & Régionale")
-
-    all_results = []
-
-    for country, zone in countries:
-        sector_scores = compute_country_sector_scores(country)
-
-        for sector in sector_mapping.keys():
-            all_results.append([
-                country,
-                zone,
-                sector,
-                sector_scores[sector]
-            ])
-
-    results_df = pd.DataFrame(
-        all_results,
-        columns=["Pays", "Région", "Secteur", "Score"]
-    )
-
-    # 1️ - SCORE PAR SECTEUR ET PAR REGION
-    st.subheader("1️ - Score par Secteur et par Région")
-
-    sector_region = (
-        results_df
-        .groupby(["Région", "Secteur"])["Score"]
-        .mean()
-        .reset_index()
-        .sort_values("Score", ascending=False)
-    )
-
-    st.dataframe(sector_region, use_container_width=True)
-
-    # Graphique barres
-    st.subheader("Barres par Secteur pour chaque Région")
-
-    for region in sector_region["Région"].unique():
-        subset = sector_region[sector_region["Région"] == region]
-
-        fig, ax = plt.subplots(figsize=(6,4))
-        ax.bar(subset["Secteur"], subset["Score"], color=violet_moyen)
-        plt.xticks(rotation=45)
-        plt.title(f"Score Sectoriel - {region}")
-        st.pyplot(fig)
-
-    # 2️ - SCORE GLOBAL PAR REGION
-    st.subheader("2️ - Score Global par Région")
-
-    global_region = (
-        results_df
-        .groupby("Région")["Score"]
-        .mean()
-        .reset_index()
-        .sort_values("Score", ascending=False)
-    )
-
-    st.dataframe(global_region, use_container_width=True)
-
-    fig, ax = plt.subplots(figsize=(6,4))
-    ax.bar(global_region["Région"], global_region["Score"], color=violet_principal)
-    plt.xticks(rotation=45)
-    plt.title("Score Global par Région")
-    st.pyplot(fig)
-
-    # 3️ - SCORE GLOBAL PAR SECTEUR
-    st.subheader("3️ - Score Global par Secteur")
-
-    global_sector = (
-        results_df
-        .groupby("Secteur")["Score"]
-        .mean()
-        .reset_index()
-        .sort_values("Score", ascending=False)
-    )
-
-    st.dataframe(global_sector, use_container_width=True)
-
-    fig, ax = plt.subplots(figsize=(6,4))
-    ax.bar(global_sector["Secteur"], global_sector["Score"], color=violet_clair)
-    plt.xticks(rotation=45)
-    plt.title("Score Global par Secteur")
-    st.pyplot(fig)
-
-    # 4️ - SCORE GLOBAL MONDIAL
-    st.subheader("4️ - Score Global Mondial")
-
-    global_world = round(results_df["Score"].mean(),2)
-
-    st.metric("Score Mondial Global", global_world)
-
-    # Heatmap
-    st.subheader("Heatmap Globale Région x Secteur")
-
-    pivot_table = sector_region.pivot(
-        index="Région",
-        columns="Secteur",
-        values="Score"
-    )
-
-    fig, ax = plt.subplots(figsize=(8,6))
-    cax = ax.imshow(pivot_table, cmap="Purples")
-    plt.xticks(range(len(pivot_table.columns)), pivot_table.columns, rotation=45)
-    plt.yticks(range(len(pivot_table.index)), pivot_table.index)
-    fig.colorbar(cax)
-    st.pyplot(fig)
-
-# =========================================================
-# ================= CONSULTANCE IFC =======================
-# =========================================================
-
-if page == "Consultance International Finance Corporation":
-
-    st.header("Consultance International Finance Corporation")
-
-    st.markdown("""
-    Classement stratégique des 20 pays les moins performants
-    pour orientation et assistance prioritaire IFC.
-    """)
-
-    # Score global pays
-    country_scores = []
-
-    for country, zone in countries:
-        sector_scores = compute_country_sector_scores(country)
-        mean_score = np.nanmean(list(sector_scores.values()))
-        country_scores.append([country, zone, mean_score])
-
-    consult_df = pd.DataFrame(
-        country_scores,
-        columns=["Pays", "Région", "Score Global"]
-    )
-
-    consult_df = consult_df.sort_values("Score Global", ascending=True).head(20)
-
-    st.subheader("20 Pays les moins performants")
-
-    st.dataframe(consult_df, use_container_width=True)
-
-    fig, ax = plt.subplots(figsize=(8,6))
-    ax.barh(consult_df["Pays"], consult_df["Score Global"], color=violet_fonce)
-    ax.invert_yaxis()
-    plt.title("Bottom 20 Pays - Priorité Consultance IFC")
-    st.pyplot(fig)
+fig,ax=plt.subplots(figsize=(6,4))
+ax.barh(consult_df["Pays"],consult_df["Score"],color=violet_fonce)
+ax.invert_yaxis()
+st.pyplot(fig)
