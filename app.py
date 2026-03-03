@@ -288,13 +288,95 @@ df_latest["Score_final"] = df_latest.apply(adjust_direction, axis=1)
 # 3️⃣ SCORE PAR BLOCS STRATEGIQUES
 # ---------------------------------------------------------
 
+# =========================================================
+# BLOCS STRUCTURES SELON ARCHITECTURE OFFICIELLE WDI (65)
+# =========================================================
+
 blocks = {
-    "MACROECONOMIE":[i for i in indicators if "GDP" in i or "Inflation" in i or "capital" in i or "savings" in i],
-    "SECTEUR EXTERIEUR":[i for i in indicators if "Exports" in i or "Imports" in i or "Current account" in i],
-    "FINANCES PUBLIQUES":[i for i in indicators if "debt" in i.lower() or "revenue" in i.lower() or "tax" in i.lower() or "government" in i.lower()],
-    "SECTEUR FINANCIER":[i for i in indicators if "interest" in i.lower() or "Broad money" in i or "exchange rate" in i.lower()],
-    "ENVIRONNEMENT":[i for i in indicators if "energy" in i.lower() or "Forest" in i or "pollution" in i or "PM2.5" in i],
-    "SOCIAL":[i for i in indicators if "Population" in i or "poverty" in i.lower() or "Life expectancy" in i or "electricity" in i]
+
+    # ==========================
+    # 1️⃣ MACROECONOMIE
+    # ==========================
+    "MACROECONOMIE": [
+        i for i in indicators
+        if (
+            "GDP" in i
+            or "Gross capital formation" in i
+            or "Gross fixed capital formation" in i
+            or "Gross domestic savings" in i
+            or "Gross domestic income" in i
+            or "Inflation" in i
+        )
+    ],
+
+    # ==========================
+    # 2️⃣ SECTEUR EXTERIEUR
+    # ==========================
+    "SECTEUR EXTERIEUR": [
+        i for i in indicators
+        if (
+            "Exports" in i
+            or "Imports" in i
+            or "Current account" in i
+            or "Food imports" in i
+        )
+    ],
+
+    # ==========================
+    # 3️⃣ FINANCES PUBLIQUES
+    # ==========================
+    "FINANCES PUBLIQUES": [
+        i for i in indicators
+        if (
+            "Central government debt" in i
+            or "Debt service" in i
+            or "External debt" in i
+            or "Tax revenue" in i
+            or "Taxes on" in i
+            or "Government expenditure" in i
+        )
+    ],
+
+    # ==========================
+    # 4️⃣ SECTEUR FINANCIER
+    # ==========================
+    "SECTEUR FINANCIER": [
+        i for i in indicators
+        if (
+            "interest rate" in i.lower()
+            or "Deposit interest" in i
+            or "Lending interest" in i
+            or "Real interest" in i
+            or "Broad money" in i
+            or "exchange rate" in i.lower()
+        )
+    ],
+
+    # ==========================
+    # 5️⃣ ENVIRONNEMENT
+    # ==========================
+    "ENVIRONNEMENT": [
+        i for i in indicators
+        if (
+            "Forest area" in i
+            or "energy" in i.lower()
+            or "pollution" in i.lower()
+            or "PM2.5" in i
+        )
+    ],
+
+    # ==========================
+    # 6️⃣ SOCIAL
+    # ==========================
+    "SOCIAL": [
+        i for i in indicators
+        if (
+            "Population" in i
+            or "Life expectancy" in i
+            or "poverty" in i.lower()
+            or "electricity" in i.lower()
+        )
+    ],
 }
 
 country_data = df_latest[df_latest["Country Name"] == selected_country]
@@ -303,12 +385,13 @@ block_scores = {}
 
 for block, inds in blocks.items():
     block_df = country_data[country_data["Indicator Name"].isin(inds)]
+
     if len(block_df) > 0:
         block_scores[block] = block_df["Score_final"].mean()
     else:
         block_scores[block] = 0
 
-score_global = round(np.mean(list(block_scores.values()))*100,2)
+score_global = round(np.mean(list(block_scores.values())) * 100, 2)
 
 # ---------------------------------------------------------
 # 4️⃣ AJUSTEMENT STRATEGIQUE IFC
